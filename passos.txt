@@ -8,5 +8,47 @@ dotnet new mvc -o Pokedex
 -- Abrir o programa XAMPP e clicar executar no MySQL
 -- Abrir o programa MySQL Workbench, abrir o script "Script Mysql.sql" e clicar no "raio"
 
+
+--Conexão com banco no appsettings.json
+--"ConnectionStrings": {
+--    "Conexao": "server=localhost;port=3306;database=pokedex;uid=root;pwd=''"}
+
+
+--Exemplo index
+        @foreach (Pokemon pokemon in Model)
+        {
+            <!-- Card Pokemon - Inicio -->
+            <div class="col">
+                <a href="#" class="text-decoration-none">
+                    <div class="card" style="background-color:@pokemon.Tipos[0].Tipo.Cor">
+                        <img src=@pokemon.Imagem class="card-img-top" alt="@pokemon.Nome" />}
+
+
+--AppDB Context
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> opt) : base(opt)
+        {
+        }
+
+        public DbSet<Genero> Generos { get; set; }}
+
+
+--HomeController
+
+    public HomeController(ILogger<HomeController> logger, AppDbContext db)
+    {
+        _logger = logger;
+        _db = db;
+    }
+
+    public IActionResult Index()
+    {
+        var porkemons = _db.Pokemons
+            .Include(p => p.Tipos)
+            .ThenInclude(pt => pt.Tipo)
+            .ToList();
+        return View(porkemons);}
+
 -- Executa o projeto
 dotnet watch run
